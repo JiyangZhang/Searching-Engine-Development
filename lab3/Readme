@@ -1,0 +1,29 @@
+readme for lab3
+1. just run the run_backend_test.py file and it will print the pagerank scores of the urls in urls.file. Besides, it will store the all the needed data in the mongoDB.
+
+2.Just get to the IP: http://52.3.22.181
+
+3.After test the frontend using apache ab, we found there is a big difference between lab2 and lab3.
+  In lab2, we can give the n parameter and c parameter large number and it will return the test result in a minute or even a few seconds.
+  While in lab3, we can not set 'c' and 'p' too large otherwise it will occur a error in linking to the ec2 server.
+   For details: 
+	lab 2:
+	c = 500 n = 1000 
+	time taken for tests : 63.358 seconds 
+    total transferred    : 91600 bytes
+    requests per second  : 15.78[#/sec]
+    time per request     : 63.358 [ms] (mean, across all concurrent requests)
+	transfer rate        : 14.12 [Kbytes/sec] received 
+	lab3:
+	c = 5 n = 100 
+	time taken for tests : 104.805 seconds 
+    total transferred    : 195900 bytes
+    requests per second  : 0.95[#/sec]
+    time per request     : 1048.046 [ms] (mean, across all concurrent requests)
+	transfer rate        : 1.83 [Kbytes/sec] received 
+     
+  By increasing the c and n, we are increasing the requests and concurrency(number of multiple requests to make at a time). The result of apache ab reflect how fast the server can receive and serve requests at different levels of concurrency. We can see that the time and transferred streams in lab3 are greatly larger than lab2, therefore it is not hard to explain the reason why the server cannont receive that high concurrency and requests.
+  In lab3, when the frontend receive the keyword, it will search the lexicon for the word_id, then search inverted_index for the doc_id list, then search the doc_index to get the url and their title and descriptions. At last it will call the pagerank to sort the url list and give back to the user. So it may take time to search the database and use some memory. Thus, the performance of frontend in lab3 is worse than lab2.
+
+4.bonus work:
+the data base not only store the url but also store the title and brief contents of the webpage. It can be seen in the frontend.
