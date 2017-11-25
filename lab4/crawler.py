@@ -4,7 +4,6 @@ from BeautifulSoup import *
 from collections import defaultdict
 import re
 from pagerank import page_rank
-from storage import store
 
 
 def attr(elem, attr):
@@ -35,8 +34,8 @@ class crawler(object):
         self._get_inverted_index = dict()
         self._inverted_index = dict()
 		 
-        self._from_doc_list = []
-        self._to_doc_list = []
+        self._from_doc_id = []
+        self._to_doc_id = []
         self._rank_page = []
 
 
@@ -52,9 +51,6 @@ class crawler(object):
         def visit_title(*args, **kargs):
             self._visit_title(*args, **kargs)
             self._increase_font_factor(7)(*args, **kargs)
-		
-
-
 
         # increase the font size when we enter these tags
         self._enter['b'] = self._increase_font_factor(2)
@@ -131,17 +127,18 @@ class crawler(object):
         self._mock_next_word_id += 1
         return ret_id
 
-    def word_id(self, word):  # lexicon = word_cache
+    def word_id(self, word):
         """Get the word id of some specific word."""
         if word in self._word_id_cache:
             return self._word_id_cache[word]
-        
-        ##NEW FOR LAB3 ADD INTO DATABASE
+
+        # TODO: 1) add the word to the lexicon, if that fails, then the
+        #          word is in the lexicon
+        #       2) query the lexicon for the id assigned to this word,
+        #          store it in the word id cache, and return the id.
+
         word_id = self._mock_insert_word(word)
-        self._word_id_cache[word] = word_id   
-        dic = {'word' :word 
-        'id': word_id}
-        store('lexicon', dic)
+        self._word_id_cache[word] = word_id
         return word_id
 
     def document_id(self, url):
@@ -149,13 +146,12 @@ class crawler(object):
         if url in self._doc_id_cache:
             return self._doc_id_cache[url]
 
-        #NEW For lab3, add the document_id to database
+        # TODO: just like word id cache, but for documents. if the document
+        #       doesn't exist in the db then only insert the url and leave
+        #       the rest to their defaults.
 
         doc_id = self._mock_insert_document(url)
         self._doc_id_cache[url] = doc_id
-        dic = {'url' : url
-        'id' : doc_id}
-        store('documet_index', dic)
         return doc_id
 
     def _fix_url(self, curr_url, rel):
@@ -177,12 +173,10 @@ class crawler(object):
 
 
     def add_link(self, from_doc_id, to_doc_id):
-
         """Add a link into the database, or increase the number of links between
         two pages in the database."""
-		print('11111111111111111111111111111111111111111')
-        self._from_doc_list.append(from_doc_id)
-        self._to_doc_list.append(to_doc_id)
+        #self._from_doc_list.append(from_doc_id)
+        #self._to_doc_list.append(to_doc_id)
 		
         
 
@@ -192,7 +186,7 @@ class crawler(object):
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
-        #print ("document title=" + repr(title_text))
+        print ("document title=" + repr(title_text))
 
         # TODO update document title for document id self._curr_doc_id
 
@@ -212,11 +206,10 @@ class crawler(object):
         # add a link entry into the database from the current document to the
         # other document
         self.add_link(self._curr_doc_id, self.document_id(dest_url))
-		
-		#'''bonus for extra feature'''
+
         # TODO add title/alt/text to index for destination url
 
-    def _add_words_to_document(self):  # inverted_index
+    def _add_words_to_document(self):
         # TODO: knowing self._curr_doc_id and the list of all words and their
         #       font sizes (in self._curr_words), add all the words into the
         #       database for this document
@@ -226,9 +219,7 @@ class crawler(object):
                 self._inverted_index[i[0]].add(self._curr_doc_id)
             else:
                 self._inverted_index[i[0]].add(self._curr_doc_id)
-            dic = {'word' : i[0]
-            'doc_id' : self}
-        #print ("    num words=" + str(len(self._curr_words)))
+        print ("    num words=" + str(len(self._curr_words)))
 
     def _increase_font_factor(self, factor):
         """Increade/decrease the current font size."""
@@ -338,8 +329,7 @@ class crawler(object):
             try:
                 socket = urllib2.urlopen(url, timeout=timeout)
                 soup = BeautifulSoup(socket.read())
-				
-				
+
                 self._curr_depth = depth_ + 1
                 self._curr_url = url
                 self._curr_doc_id = doc_id
@@ -348,7 +338,7 @@ class crawler(object):
                 self._index_document(soup) # have had the curr_doc_id
                # print(self._curr_words)
                 self._add_words_to_document()
-                #print ("    url=" + repr(self._curr_url))
+                print ("    url=" + repr(self._curr_url))
 
             except Exception as e:
                 print (e)
@@ -356,14 +346,9 @@ class crawler(object):
             finally:
                 if socket:
                     socket.close()
+		
+        #self._rank_page = page_rank(list(zip(self._from_doc_list, self._to_doc_list)))
 
-		
-		
-		#self._rank_page = page_rank(list(zip(self._from_doc_list, self._to_doc_list)))
-		#store('inverted index', self._inverted_index)
-		#store('lexicon', self._word_id_cache)
-		#store('document index', self._doc_id_cache)
-		#store('Page rank', self._rank_page)
 
     def get_inverted_index(self):
         return self._inverted_index
@@ -378,16 +363,13 @@ class crawler(object):
         for key in self._inverted_index:
             L=[]
             self._get_inverted_index[self._inverted_word_id_cache[key]]=' '
-        return self._get_inverted_index
 
-	
-		
-       
-	
+        return  self._get_inverted_index
+
 
 if __name__ == "__main__":
     bot = crawler(None, "urls.txt")
     bot.crawl(depth=1)
-    print(bot.get_inverted_index())
+    print bot.get_inverted_index()
     print bot.get_resovled_inverted_index()
-    
+    #print(self._rank_page)
