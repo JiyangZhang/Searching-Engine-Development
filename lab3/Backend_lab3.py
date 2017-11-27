@@ -22,6 +22,12 @@ def attr(elem, attr):
     except:
         return ""
 
+def attr_(elem):
+    """get the image url of"""
+
+
+
+
 
 WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 
@@ -49,7 +55,6 @@ class crawler(object):
         self._from_doc_list = []
         self._to_doc_list = []
         self._rank_page = []
-
         self._url_title = {}  # store the title of the url
 
 
@@ -59,8 +64,9 @@ class crawler(object):
 
         # add a link to our graph, and indexing info to the related page
         self._enter['a'] = self._visit_a
+        
 
-        # record the currently indexed document's title an increase
+        # record the currently indexed document's title and increase
         # the font size
         def visit_title(*args, **kargs):
             self._visit_title(*args, **kargs)
@@ -77,6 +83,7 @@ class crawler(object):
         self._enter['h4'] = self._increase_font_factor(4)
         self._enter['h5'] = self._increase_font_factor(3)
         self._enter['title'] = visit_title
+        self._enter['img'] = self._visit_img
 
         # decrease the font size when we exit these tags
         self._exit['b'] = self._increase_font_factor(-2)
@@ -105,7 +112,6 @@ class crawler(object):
             'u', 'v', 'w', 'x', 'y', 'z', 'and', 'or',
         ])
 
-        # TODO remove me in real version
         self._mock_next_doc_id = 1
         self._mock_next_word_id = 1
 
@@ -124,61 +130,50 @@ class crawler(object):
         except IOError:
             pass
 
-    # TODO remove me in real version
+    
     def _mock_insert_document(self, url):
-        """A function that pretends to insert a url into a document db table
+        """A function that inserts a url into a documet db table
         and then returns that newly inserted document's id."""
         ret_id = self._mock_next_doc_id
         self._mock_next_doc_id += 1
+        dic = {'url' : url,
+        'id' : ret_id,
+        'title' : "",
+        'elem' : "",
+        'img' :""}
+        store('documet_index', dic)
         return ret_id
 
-    # TODO remove me in real version
+    
     def _mock_insert_word(self, word):
-        """A function that pretends to inster a word into the lexicon db table
+        """A function that insterts a word into the lexicon db table
         and then returns that newly inserted word's id."""
         ret_id = self._mock_next_word_id
         self._mock_next_word_id += 1
+        dic = {'word' :word,
+        'id': ret_id}
+        store('lexicon', dic)
         return ret_id
 
     def word_id(self, word):  # word_id_cache is the same with lexicon
-
         """Get the word id of some specific word."""
         if word in self._word_id_cache:
             return self._word_id_cache[word]
-
         word_id = self._mock_insert_word(word)
-        self._word_id_cache[word] = word_id
-
-        ##NEW FOR LAB3 ADD INTO DATABASE 
-        dic = {'word' :word,
-        'id': word_id}
-        store('lexicon', dic)
+        self._word_id_cache[word] = word_id        
         return word_id
 
     def document_id(self, url):
         """Get the document id for some url."""
         if url in self._doc_id_cache:
             return self._doc_id_cache[url]
-
-        # TODO: just like word id cache, but for documents. if the document
-        #       doesn't exist in the db then only insert the url and leave
-        #       the rest to their defaults.
-
         doc_id = self._mock_insert_document(url)
         self._doc_id_cache[url] = doc_id
-# NEW in lab3 add doc id and doc_title in database
-        dic = {'url' : url,
-        'id' : doc_id,
-        'title' : "",
-        'elem' : "",
-        'rank' : "10000"}
-        store('documet_index', dic)
         return doc_id
 
     def _fix_url(self, curr_url, rel):
         """Given a url and either something relative to that url or another url,
         get a properly parsed url."""
-
         rel_l = rel.lower()
         if rel_l.startswith("http://") or rel_l.startswith("https://"):
             curr_url, rel = rel, ""
@@ -194,18 +189,19 @@ class crawler(object):
         self._from_doc_list.append(from_doc_id)
         self._to_doc_list.append(to_doc_id)
     
-
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
         title_text = self._text_of(elem).strip()
         update('documet_index', 'title', repr(title_text), self._curr_doc_id)
         print ("document title=" + repr(title_text))
 
+    def _visit_img(self, elem):
+        """Called when visiting <img> tags."""
+        img_url = self._fix_url(self._curr_url, attr(elem, "src"))#get\the\img'surl
+        update('documet_index', 'img', str(img_url))
 
-
-    def _visit_a(self, elem):
+    def _visit_a(self, elem): # elem is the tag_name
         """Called when visiting <a> tags."""
-
         dest_url = self._fix_url(self._curr_url, attr(elem, "href"))
 
         # print "href="+repr(dest_url), \
@@ -304,7 +300,6 @@ class crawler(object):
                         tag = NextTag(tag.parent.nextSibling)
 
                     continue
-
                 # enter the tag
                 self._enter[tag_name](tag)
                 stack.append(tag)
@@ -338,7 +333,6 @@ class crawler(object):
             try:
                 socket = urllib2.urlopen(url, timeout=timeout)
                 soup = BeautifulSoup(socket.read())
-
                 self._curr_depth = depth_ + 1
                 self._curr_url = url
                 self._curr_doc_id = doc_id
@@ -365,11 +359,10 @@ class crawler(object):
             store('inverted_index', dic)
 
         #	NEW FOR LAB3 ADD THE PAGERANK
-        if len(self._from_doc_list) != 0:
-            self._rank_page = page_rank(list(zip(self._from_doc_list, self._to_doc_list)))
-            for i in self._rank_page:
-                dic = {'doc_id': i, 'score' : self._rank_page[i]}
-                store('page_rank', dic)
+        self._rank_page = page_rank(list(zip(self._from_doc_list, self._to_doc_list)))
+        for i in self._rank_page:
+            dic = {'doc_id': i, 'score' : self._rank_page[i]}
+            store('page_rank', dic)
 		
 
 
@@ -393,11 +386,7 @@ class crawler(object):
                 di[self._inverted_word_id_cache[key]]=set(L)
         return di
 
-if __name__ == "__main__":
-    bot = crawler(None, "urls.txt")
-    bot.crawl(depth=1)
-    page  = sorted(bot._rank_page.items(), key = lambda item :item[1])
-    pprint.pprint(page)
+
 
 
 
