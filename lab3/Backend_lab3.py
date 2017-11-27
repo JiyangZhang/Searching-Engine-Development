@@ -22,13 +22,6 @@ def attr(elem, attr):
     except:
         return ""
 
-def attr_(elem):
-    """get the image url of"""
-
-
-
-
-
 WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 
 
