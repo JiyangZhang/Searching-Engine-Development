@@ -15,6 +15,8 @@ import getdata as gd
 #variable definitions
 baseURL = "http://ec2-52-3-22-181.compute-1.amazonaws.com"
 #baseURL = "http://localhost:8004"
+#remote device suit
+header = "<head><meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1""></head>"
 scope = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
 redirect_uri = baseURL + '/redirect'
 code = ""
@@ -97,7 +99,7 @@ App = SessionMiddleware(bottleApp, session_opts)
 #error 404
 @error(404)
 def error404(error):
-        return '''This page or file does not exist. <br><br> Please visit <a href="''' + baseURL + '''"> Home </a> for a new search.'''
+        return header + '''This page or file does not exist. <br><br> Please visit <a href="''' + baseURL + '''"> Home </a> for a new search.'''
 
 @route('/','GET')
 def start():
@@ -126,7 +128,7 @@ def back():
 
 @route('/home_anonymous')
 def anonymous():
-        return backButton + loginButton + "<br><br>" + greeting + searchHTML
+        return header + backButton + loginButton + "<br><br>" + greeting + searchHTML
 
 @route('/user_home')
 def user_home():
@@ -147,7 +149,7 @@ def user_home():
                                 command_top_home = command_top_home+'<tr><td>'+str(key)+'</td><td>'+str(topdic[key])+'</td></tr>'
                                 i = i+1
         command_top_home = command_top_home + '</table>'
-        return backButton + logoutButton + "<br><br>" + greeting + searchHTML + command_top_home +userinfo + email + '</p>'
+        return header + backButton + logoutButton + "<br><br>" + greeting + searchHTML + command_top_home +userinfo + email + '</p>'
 
 
 #search page - includes an html form with one text box for search input
@@ -194,7 +196,7 @@ def search():
                                 command_top = command_top+'<tr><td>'+str(key)+'</td><td>'+str(topdic[key])+'</td></tr>'
                                 i = i+1
         command_top = command_top + '</table>'
-        return backButton + logoutButton  + "<br><br>" + greeting + searchHTML + command_top +userinfo + user_email[0] + '</p>'
+        return header + backButton + logoutButton  + "<br><br>" + greeting + searchHTML + command_top +userinfo + user_email[0] + '</p>'
 
 
 @route('/search', method='GET')
@@ -227,7 +229,7 @@ def searchpages(pageid, userinput):
         searchWord = (words[0])
         url = gd.word_to_urls(searchWord)
         if url == []:
-                return logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" + "<p>there is no result found!</p>"
+                return header + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" + "<p>there is no result found!</p>"
         page = []
         temp_page=[]
         #The SELECT DISTINCT statement is used to return only distinct values
@@ -258,7 +260,7 @@ def searchpages(pageid, userinput):
 
 
         if len(page) ==0:
-                return logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>"  + userinput + "not found."
+                return header + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>"  + userinput + "not found."
 
 
         pageList = "ALL RESULTS SHOWN:<br>"+"""<table border = "0"><tr>"""
@@ -270,7 +272,7 @@ def searchpages(pageid, userinput):
         if len(page) != 0:
                 Result = """<table border = "0"><tr><th align = "left"><font size=5>Search Results<font></th></tr>"""
                 urlHTML = " ".join(page[int(pageid)])
-                return logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
+                return header + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
         else:
                 redirect('/err')
 
