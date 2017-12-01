@@ -13,6 +13,7 @@ import getdata as gd
 
 
 #variable definitions
+# baseURL have to change!!!
 baseURL = "http://ec2-52-3-22-181.compute-1.amazonaws.com"
 #baseURL = "http://localhost:8004"
 #remote device suit
