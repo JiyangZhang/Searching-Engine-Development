@@ -1,0 +1,11 @@
+今晚计划
+1.结合老师笔记，复习311
+2.326project
+pagerank 算法优化 可以本地完成
+思路：
+统计一个url word number:d
+word id : set{(doc_id1, e^-num),(doc_id2, num)....}
+score = page_rank.score*0.6 + num_score*0.4  
+the smaller the score is, the better the url is 
+
+如果有时间查一查deploy的优化 可以本地完成
