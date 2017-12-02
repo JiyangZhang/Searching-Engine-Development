@@ -22,7 +22,7 @@ create the data/db
 
 if you want run backend
 install pip:sudo apt-get install python-pip
-beautifulsoup pymongo numpy
+sudo pip install beautifulsoup pymongo numpy
 
 
 frontend install
