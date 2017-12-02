@@ -23,7 +23,8 @@ we have to create the data/db     command: sudo mkdir /data/db  to make it publi
 
 if you want run backend
 install pip:sudo apt-get install python-pip
-sudo pip install beautifulsoup pymongo numpy
+sudo pip install beautifulsoup pymongo 
+numpy:sudo apt-get install python-numpy
 
 
 frontend install
