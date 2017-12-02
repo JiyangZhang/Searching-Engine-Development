@@ -13,11 +13,11 @@ import getdata as gd
 
 
 #variable definitions
-baseURL = "http://ec2-52-3-22-181.compute-1.amazonaws.com"
+baseURL = "http://ec2-54-236-238-120.compute-1.amazonaws.com"
 #new
 mapURL = "https://www.google.com/maps/search/"
 map_flag = 0
-
+image_flag = 0
 scope = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
 redirect_uri = baseURL + '/redirect'
 code = ""
@@ -50,15 +50,16 @@ def countdic(stringin):
 frontend = '''<!DOCTYPE html>
 <html>
         <head>
+        <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1"">
                 <style>
 li{
         display:inline;
 }
 body {
-        background-image: url("frontend_background.jpg");
+        background-image: url("https://static.pexels.com/photos/36764/marguerite-daisy-beautiful-beauty.jpg");
 }
 a{
-        font-size:20px
+        font-size:20px;
 }
 a:link {
         color: #FFF5EE;
@@ -74,7 +75,7 @@ a:visited {
 a:hover{
         color: #FFFFFF;
         background-color: transparent;
-        text-decoration: blink;
+        text-decoration: none;
 }
 
 div.relative {
@@ -190,18 +191,24 @@ def back():
 # different searching modes
 @route('/map')
 def map():
-    map_flag = 1
-    image_flag = 0
-    redirect(baseURL)
+        global map_flag
+        global image_flag
+        map_flag = 1
+        image_flag = 0
+        redirect(baseURL)
 
 @route('/all')
 def all():
+        global map_flag
+        global image_flag
         map_flag = 0
         image_flag = 0
         redirect(baseURL)
 
 @route('/image')
 def all():
+        global map_flag
+        global image_flag
         image_flag = 1
         map_flag = 0
         redirect(baseURL)
