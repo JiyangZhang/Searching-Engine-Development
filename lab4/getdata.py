@@ -72,4 +72,11 @@ def word_to_urls(word):
 	sorted_list = rank(doc_list)  # return a sorted list of tuples (doc_id, score)
 	url_list = sorted_url(sorted_list)  # return a list of sorted url list
 	return url_list
+
+def word_to_img(word):
+    number = word_to_id(word)  # return the id of word
+    doc_list = word_to_doc(number)  # return the doc_list of a word
+    sorted_list = rank(doc_list)  # return a sorted list of tuples (doc_id, score)
+    url_list = img_url(sorted_list)  # return a list of sorted url list
+    return url_list
  
