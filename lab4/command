@@ -21,7 +21,7 @@ create the data/db
 /home/ubuntu
 
 if you want run backend
-install pip
+install pip:sudo apt-get install python-pip
 beautifulsoup pymongo numpy
 
 
