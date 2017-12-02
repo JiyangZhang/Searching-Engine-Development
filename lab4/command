@@ -1,0 +1,32 @@
+ssh -i zhang.pem ubuntu@52.3.22.181
+scp -i zhang.pem /guest/z/zhan5610/Desktop/FrontEnd_lab3.py ubuntu@54.236.238.120:~/.
+
+
+
+what need to deploy
+1. mongod
+	install
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+	start mongo shell
+cd /usr/bin/mongo
+	restore the mongodata
+
+create the data/db
+ command: sudo mkdir data
+		: sudo mkdir data/db
+
+/home/ubuntu
+
+if you want run backend
+install pip
+beautifulsoup pymongo numpy
+
+
+frontend install
+bottle httplib2  oauth2client.client sudo apt install python-oauth2client  
+sudo pip install --upgrade google-api-python-client
+sudo apt-get install python-beaker
+change the data base name in getdata.py
