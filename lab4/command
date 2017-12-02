@@ -15,7 +15,7 @@ cd /usr/bin/mongo
 	restore the mongodata
 
 in order to run mongodb 
-we have to create the data/db     command: sudo mkdir /data/db
+we have to create the data/db     command: sudo mkdir /data/db  to make it public to mongodb: sudo chmod -R go+w /data/db
  command: sudo mkdir data
 		: sudo mkdir data/db
 
