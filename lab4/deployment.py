@@ -47,4 +47,18 @@ os.system("ssh -i key_pair.pem ubuntu@<PUBLIC-IP-ADDRESS>")
 os.system("install the necessary package")
 os.system("run the frontend")
 """
-
+# create load balancer
+elb = boto.ec2.elb.connect_to_region( 'us-east-1', aws_access_key_id ='#', aws_secret_access_key = '*\
+')
+hc = HealthCheck(
+        interval=30,
+        healthy_threshold=10,
+        unhealthy_threshold=2,
+        target='TCP:80'
+)
+subnet = ['subnet-44d40519','subnet-9d0891d6']
+ports = [(80, 80, 'TCP')]
+lb = elb.create_load_balancer('my-csc-326', None, ports, subnet ,["sg-65149510"], 'internet-facing', None)
+lb.configure_health_check(hc)
+print (lb.dns_name)
+#lb.register_instances(instance_ids)
