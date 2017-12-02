@@ -14,7 +14,8 @@ sudo apt-get install -y mongodb-org
 cd /usr/bin/mongo
 	restore the mongodata
 
-create the data/db
+in order to run mongodb 
+we have to create the data/db     command: sudo mkdir /data/db
  command: sudo mkdir data
 		: sudo mkdir data/db
 
