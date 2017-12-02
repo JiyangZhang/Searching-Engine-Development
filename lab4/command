@@ -28,7 +28,8 @@ numpy:sudo apt-get install python-numpy
 
 
 frontend install
-bottle httplib2  oauth2client.client sudo apt install python-oauth2client  
+sudo pip install : bottle httplib2  
+oauth2client.client sudo apt install python-oauth2client  
 sudo pip install --upgrade google-api-python-client
 sudo apt-get install python-beaker
 change the data base name in getdata.py
