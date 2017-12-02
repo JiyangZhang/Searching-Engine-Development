@@ -46,8 +46,9 @@ def countdic(stringin):
             flag = i+1
     return dic
 
-#Html script
-frontend = '''<!DOCTYPE html>
+#frontend script
+frontend = []
+frontend.append('''<!DOCTYPE html>
 <html>
         <head>
         <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1"">
@@ -69,13 +70,19 @@ a:link {
 a:visited {
         color: white;
         background-color: transparent;
-        text-decoration: none;
+        text-decoration: underline;
 }
 
 a:hover{
-        color: #FFFFFF;
+        color: #FFF8DC;
         background-color: transparent;
         text-decoration: none;
+}
+
+.active {
+color: #FFF8DC;
+background-color: transparent;
+text-decoration : none;
 }
 
 div.relative {
@@ -89,7 +96,7 @@ div.relative {
 <body>
 <div class = "relative">
 <li>
-<a href = "''' + baseURL +"/all" + '''">All &nbsp</a>
+<a class = "active" href = "''' + baseURL +"/all" + '''">All &nbsp</a>
 </li>
 <li>
 <a href = "'''+ baseURL + "/map" + '''">Maps &nbsp</a>
@@ -98,9 +105,128 @@ div.relative {
 <a href = "'''+ baseURL + "/image" + '''">Images &nbsp</a>
 </li>
 </div>
+''' )  
 
-'''      
+frontend.append('''<!DOCTYPE html>
+<html>
+        <head>
+        <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1"">
+                <style>
+li{
+        display:inline;
+}
+body {
+        background-image: url("https://static.pexels.com/photos/36764/marguerite-daisy-beautiful-beauty.jpg");
+}
+a{
+        font-size:20px;
+}
+a:link {
+        color: #FFF5EE;
+        background-color: transparent;
+        text-decoration: none;
+}
+a:visited {
+        color: white;
+        background-color: transparent;
+        text-decoration: underline;
+}
 
+a:hover{
+        color: #FFF8DC;
+        background-color: transparent;
+        text-decoration: none;
+}
+
+.active {
+        color: #FFF8DC;
+        background-color: transparent;
+        text-decoration : none;
+}
+
+div.relative {
+        position: relative;
+        left: 60px;
+}
+
+                </style>
+
+        </head>
+<body>
+<div class = "relative">
+<li>
+<a  href = "''' + baseURL +"/all" + '''">All &nbsp</a>
+</li>
+<li>
+<a class = "active" href = "'''+ baseURL + "/map" + '''">Maps &nbsp</a>
+</li>
+<li>  
+<a href = "'''+ baseURL + "/image" + '''">Images &nbsp</a>
+</li>
+</div>
+
+''' )
+frontend.append('''<!DOCTYPE html>
+<html>
+        <head>
+        <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1"">
+                <style>
+li{
+        display:inline;
+}
+body {
+        background-image: url("https://static.pexels.com/photos/36764/marguerite-daisy-beautiful-beauty.jpg");
+}
+a{
+        font-size:20px;
+}
+a:link {
+        color: #FFF5EE;
+        background-color: transparent;
+        text-decoration: none;
+}
+a:visited {
+        color: white;
+        background-color: transparent;
+        text-decoration: underline;
+}
+
+a:hover{
+        color: #FFF8DC;
+        background-color: transparent;
+        text-decoration: none;
+}
+
+.active {
+        color: #FFF8DC;
+        background-color: transparent;
+        text-decoration : none;
+}
+
+div.relative {
+        position: relative;
+        left: 60px;
+}
+
+                </style>
+
+        </head>
+<body>
+<div class = "relative">
+<li>
+<a  href = "''' + baseURL +"/all" + '''">All &nbsp</a>
+</li>
+<li>
+<a href = "'''+ baseURL + "/map" + '''">Maps &nbsp</a>
+</li>
+<li>  
+<a class = "active" href = "'''+ baseURL + "/image" + '''">Images &nbsp</a>
+</li>
+</div>
+
+''' )
+
+html = frontend[0]
 #Search form
 searchHTML = '''
         <div align ="middle">
@@ -160,12 +286,17 @@ def error404(error):
 
 @route('/','GET')
 def start():
+        if map_flag == 1:
+                html = frontend[1]
+        elif image_flag ==1:
+                html = frontend[2]
+        else:
+                html = frontend[0]
         session = request.environ.get('beaker.session')
         if  session == None:
                 redirect('/home_anonymous')
         else:
                 redirect('/user_home')
-
 
 
 
@@ -215,7 +346,7 @@ def all():
  
 @route('/home_anonymous')
 def anonymous():
-        return frontend + backButton + loginButton + "<br><br>" + greeting + searchHTML
+        return html + backButton + loginButton + "<br><br>" + greeting + searchHTML
 
 @route('/user_home')
 def user_home():
@@ -236,7 +367,7 @@ def user_home():
                                 command_top_home = command_top_home+'<tr><td>'+str(key)+'</td><td>'+str(topdic[key])+'</td></tr>'
                                 i = i+1
         command_top_home = command_top_home + '</table>'
-        return frontend + backButton + logoutButton + "<br><br>" + greeting + searchHTML + command_top_home +userinfo + email + '</p>'
+        return html + backButton + logoutButton + "<br><br>" + greeting + searchHTML + command_top_home +userinfo + email + '</p>'
 
 
 #search page - includes an html form with one text box for search input
@@ -283,7 +414,7 @@ def search():
                                 command_top = command_top+'<tr><td>'+str(key)+'</td><td>'+str(topdic[key])+'</td></tr>'
                                 i = i+1
         command_top = command_top + '</table>'
-        return frontend + backButton + logoutButton  + "<br><br>" + greeting + searchHTML + command_top +userinfo + user_email[0] + '</p>'
+        return html + backButton + logoutButton  + "<br><br>" + greeting + searchHTML + command_top +userinfo + user_email[0] + '</p>'
 
 
 @route('/search', method='GET')
