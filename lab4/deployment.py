@@ -2,7 +2,9 @@ import  boto.ec2
 import time
 import os
 import paramiko
-
+import subprocess
+"""important notes have to run by typing 
+yes yes | python deployment.py"""
 #get access
 f = open('config.txt')    # people have to type their key_id at the first line and secret at the second line
 l = []
@@ -18,12 +20,13 @@ secret_access_key = l[1]
 
 # connection
 conn = boto.ec2.connect_to_region('us-east-1', aws_access_key_id = str(key_id), aws_secret_access_key = str(secret_access_key))
-
+"""
 # create key pair
-keypair = conn.create_key_pair('csczj')
+keypair = conn.create_key_pair('csczjy')
 keypair.save(".")
-key_name = 'csczj.pem'
+key_name = 'csczjy.pem'
 os.system("chmod 400 " + key_name)
+"""
 """
 # create security groups
 web = conn.create_security_group('csc326_group11', 'Our CS Group')
@@ -33,24 +36,26 @@ web.authorize('TCP', 80, 80, '0.0.0.0/0')
 """
 
 # launch instance
-reservation_obj = conn.run_instances('ami-8caa1ce4', instance_type='t1.micro', security_groups= ['csc326_group11'], key_name= 'csczj' )# have to change key
+reservation_obj = conn.run_instances('ami-8caa1ce4', instance_type='t1.micro',  subnet_id = 'subnet-44d40519', security_group_ids= ['sg-65149510'], key_name= 'csczjy' )# have to change key
 instance = reservation_obj.instances[0]
 # get the instance ip address
 while instance.update() != "running":
-    time.sleep(30)  # Run this in a green thread, ideally
+    time.sleep(120)  # Run this in a green thread, ideally
 instance_address = instance.ip_address  # get the address of instance
 instance_ID = instance.id   # get the instance id 
 print(instance_address)
 
+
+key_name = 'csczjy.pem'
 # all what to do on the server
 
-os.system("scp -i " + key_name + "  Backend_lab4_new.py ubuntu@" + instance_address + ":~/.")   # upload the files to the server
-os.system("scp -i " + key_name + "  FrontEnd_lab4.py ubuntu@" + instance_address + ":~/.")
-os.system("scp -i " + key_name + "  getdata.py ubuntu@" + instance_address + ":~/.")
-os.system("scp -i " + key_name + "  storage.py ubuntu@" + instance_address + ":~/.")
-os.system("scp -i " + key_name + "  urls.txt ubuntu@" + instance_address + ":~/.")
-os.system("scp -i " + key_name + "  pagerank.py ubuntu@" + instance_address + ":~/.")
-os.system("scp -i " + key_name + "  Backend_lab4_new.py ubuntu@" + instance_address + ":~/.")
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' Backend_lab4_new.py ubuntu@" + instance_address + ":~/.")   # upload the files to the server
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' FrontEnd_lab4.py ubuntu@" + instance_address + ":~/.")
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' getdata.py ubuntu@" + instance_address + ":~/.")
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' storage.py ubuntu@" + instance_address + ":~/.")
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' urls.txt ubuntu@" + instance_address + ":~/.")
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' pagerank.py ubuntu@" + instance_address + ":~/.")
+os.system("scp -i " + key_name + " -o 'StrictHostKeyChecking no' Backend_lab4_new.py ubuntu@" + instance_address + ":~/.")
 
 k = paramiko.RSAKey.from_private_key_file(key_name) # must be in your current dir
 c = paramiko.SSHClient()
