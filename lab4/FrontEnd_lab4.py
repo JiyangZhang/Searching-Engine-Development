@@ -13,7 +13,7 @@ import getdata as gd
 
 
 #variable definitions
-baseURL = "http://ec2-54-236-238-120.compute-1.amazonaws.com"
+baseURL = ""
 #new
 mapURL = "https://www.google.com/maps/search/"
 map_flag = 0
@@ -285,7 +285,10 @@ def error404(error):
         return '''This page or file does not exist. <br><br> Please visit <a href="''' + baseURL + '''"> Home </a> for a new search.'''
 
 @route('/','GET')
+
 def start():
+        global baseURL
+        baseURL = '{}'.format(request.url)
         if map_flag == 1:
                 html = frontend[1]
         elif image_flag ==1:
