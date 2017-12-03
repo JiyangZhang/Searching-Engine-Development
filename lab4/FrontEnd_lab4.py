@@ -228,6 +228,14 @@ div.relative {
 
 html = frontend[0]
 #Search form
+searchHTML_mid = '''
+	<div align ="middle">
+		<form action ="/search" method="get" autocomplete="on" spellcheck="true">
+			Search: <input name="userinput" type="text"/>
+			<input value = "Search" type="submit" />
+		</form>
+	</div>
+'''
 searchHTML = '''
         <div align ="middle">
                 <form action ="/search" method="get">
@@ -239,10 +247,38 @@ searchHTML = '''
 
 #greetings
 greeting = '''
-        <div align ="middle">
-                <img src="http://www.brandcrowd.com/gallery/brands/pictures/picture14537595058709.png" width=350>
-        </div>
-        '''
+<img id="d2" src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/9825bc315c6034a8e0dd5e1dc01349540923766b.jpg" width=50/>
+<img src="https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/aa64034f78f0f736b693aa9d0155b319ebc41338.jpg" width=150>
+'''
+greeting_anime = '''
+<div align ="middle">
+<img id="d2" src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/9825bc315c6034a8e0dd5e1dc01349540923766b.jpg" width="150" align="middle"/>
+<script type="text/javascript">
+var i=1;
+function f(){
+   i++;
+   if(i>4) i=1;
+   if(i==1){
+   document.getElementById('d2').src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/9825bc315c6034a8e0dd5e1dc01349540923766b.jpg";
+   }
+   if(i==2){
+   document.getElementById('d2').src="https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/b2de9c82d158ccbfa7df53a612d8bc3eb03541cf.jpg";
+   }
+   if(i==3){
+   document.getElementById('d2').src="https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/79f0f736afc37931115660b5e0c4b74543a9116b.jpg";
+   }
+   if(i==4){
+   document.getElementById('d2').src="https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/4b90f603738da977104d60b7bb51f8198718e3c8.jpg";
+   }  
+}
+window.setInterval(f, 500);
+</script></div>
+
+<div align ="middle">
+	<img src="https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/aa64034f78f0f736b693aa9d0155b319ebc41338.jpg" width=300>
+</div><br></br>
+'''
+
 #login button
 loginButton = '''<FORM METHOD="LINK" ACTION="''' + baseURL + '''/login" ALIGN = "right">
 <INPUT TYPE="submit" VALUE="Login">
@@ -349,7 +385,7 @@ def all():
  
 @route('/home_anonymous')
 def anonymous():
-        return html + backButton + loginButton + "<br><br>" + greeting + searchHTML
+        return html + backButton + loginButton + "<br><br>" + greeting_anime + searchHTML_mid
 
 @route('/user_home')
 def user_home():
@@ -370,7 +406,7 @@ def user_home():
                                 command_top_home = command_top_home+'<tr><td>'+str(key)+'</td><td>'+str(topdic[key])+'</td></tr>'
                                 i = i+1
         command_top_home = command_top_home + '</table>'
-        return html + backButton + logoutButton + "<br><br>" + greeting + searchHTML + command_top_home +userinfo + email + '</p>'
+        return html + backButton + logoutButton + "<br><br>" + greeting_anime + searchHTML_mid + command_top_home +userinfo + email + '</p>'
 
 
 #search page - includes an html form with one text box for search input
@@ -417,7 +453,7 @@ def search():
                                 command_top = command_top+'<tr><td>'+str(key)+'</td><td>'+str(topdic[key])+'</td></tr>'
                                 i = i+1
         command_top = command_top + '</table>'
-        return html + backButton + logoutButton  + "<br><br>" + greeting + searchHTML + command_top +userinfo + user_email[0] + '</p>'
+        return html + backButton + logoutButton  + "<br><br>" + greeting_anime + searchHTML_mid + command_top +userinfo + user_email[0] + '</p>'
 
 
 @route('/search', method='GET')
@@ -483,7 +519,7 @@ def searchpages(pageid, userinput):
 
 
         if len(page) ==0:
-                return logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>"  + userinput + "not found."
+                return html + logoutButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
 
 
         pageList = "ALL RESULTS SHOWN:<br>"+"""<table border = "0"><tr>"""
@@ -495,7 +531,7 @@ def searchpages(pageid, userinput):
         if len(page) != 0:
                 Result = """<table border = "0"><tr><th align = "left"><font size=5>Search Results<font></th></tr>"""
                 urlHTML = " ".join(page[int(pageid)])
-                return logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
+                return html + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
         else:
                 redirect('/err')
 
