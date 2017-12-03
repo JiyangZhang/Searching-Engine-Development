@@ -9,7 +9,7 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 import collections
 import string
-#import getdata as gd
+import getdata as gd
 
 
 #variable definitions
