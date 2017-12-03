@@ -62,7 +62,9 @@ def img_url(sorted_l):
             pass
         else:
             document = dict(posts.find_one({"id": i}))
-            l.append(document['url'])
+			if len(document['img']):
+    				for item in document['img']:
+            			l.append(item)
     return l
 
 
