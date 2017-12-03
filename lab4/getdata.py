@@ -6,7 +6,7 @@ import pymongo
 from pymongo import MongoClient
 
 # get the word's id 
-def word_to_id(word):   # given the word return the word's id 
+def word_to_id(word):
 	client = MongoClient('mongodb://localhost:27017/')
 	db = client['eecgdata']
 	posts = db['lexicon']
@@ -28,7 +28,6 @@ def rank(l):  # return list of tuples, (doc_id, score)
 	db = client['eecgdata']
 	posts = db['page_rank']
 	for i in l:
-		
 		if posts.find_one({"doc_id": i}) == None:
 			score_dic[i] = 10000
 		else:
@@ -44,7 +43,7 @@ def sorted_url(sorted_l):
 	db = client['eecgdata']
 	posts = db['documet_index']
 	l = []
-	for i,j in sorted_l:
+	for i, j in sorted_l:
 		if posts.find_one({"id" : i}) == None:
 			pass
 		else:
@@ -53,19 +52,19 @@ def sorted_url(sorted_l):
 	return l
 
 def img_url(sorted_l):
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['eecgdata']
-    posts = db['documet_index']
-    l = []
-    for i, j in sorted_l:
-        if posts.find_one({"id": i}) == None:
-            pass
-        else:
-            document = dict(posts.find_one({"id": i}))
-			if len(document['img']):
-    				for item in document['img']:
-            			l.append(item)
-    return l
+	client = MongoClient('mongodb://localhost:27017/')
+    	db = client['eecgdata']
+    	posts = db['documet_index']
+    	l = []
+    	for i, j in sorted_l:
+        	if posts.find_one({"id": i}) == None:
+            		pass
+        	else:
+            		document = dict(posts.find_one({"id": i}))
+	    		if len(document['img']):
+				for item in document['img']:
+					l.append(item)
+    	return l
 
 
 def word_to_urls(word):
@@ -76,9 +75,9 @@ def word_to_urls(word):
 	return url_list
 
 def word_to_img(word):
-    number = word_to_id(word)  # return the id of word
-    doc_list = word_to_doc(number)  # return the doc_list of a word
-    sorted_list = rank(doc_list)  # return a sorted list of tuples (doc_id, score)
-    url_list = img_url(sorted_list)  # return a list of sorted url list
-    return url_list
+	number = word_to_id(word)  # return the id of word
+    	doc_list = word_to_doc(number)  # return the doc_list of a word
+    	sorted_list = rank(doc_list)  # return a sorted list of tuples (doc_id, score)
+    	url_list = img_url(sorted_list)  # return a list of sorted url list
+    	return url_list
  
