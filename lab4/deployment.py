@@ -52,7 +52,7 @@ web.authorize('ICMP', -1, -1, '0.0.0.0/0')
 web.authorize('TCP', 22, 22, '0.0.0.0/0')
 web.authorize('TCP', 80, 80, '0.0.0.0/0')
 ## get the group id
-group_id = xxx 
+group_id = web.id
 
 for k in range(2):
 # launch instance in east-1a
