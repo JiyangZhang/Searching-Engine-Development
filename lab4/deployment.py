@@ -20,9 +20,9 @@ secret_access_key = l[1]
 conn = boto.ec2.connect_to_region('us-east-1', aws_access_key_id = str(key_id), aws_secret_access_key = str(secret_access_key))
 
 # create key pair
-keypair = conn.create_key_pair('csc')
+keypair = conn.create_key_pair('csczj')
 keypair.save(".")
-key_name = 'csc.pem'
+key_name = 'csczj.pem'
 os.system("chmod 400 " + key_name)
 """
 # create security groups
@@ -33,7 +33,7 @@ web.authorize('TCP', 80, 80, '0.0.0.0/0')
 """
 
 # launch instance
-reservation_obj = conn.run_instances('ami-8caa1ce4', instance_type='t1.micro', security_groups= ['csc326_group11'], key_name= 'csc' )# have to change key
+reservation_obj = conn.run_instances('ami-8caa1ce4', instance_type='t1.micro', security_groups= ['csc326_group11'], key_name= 'csczj' )# have to change key
 instance = reservation_obj.instances[0]
 # get the instance ip address
 while instance.update() != "running":
