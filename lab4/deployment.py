@@ -126,3 +126,5 @@ for instances in instance_add:
     lb.register_instances(instance_ids)
 
 print("You can access to our project using: %s "  % str(load_balancer_dns))
+for i in instance_add:
+    print("The instances ID are : %s" % str(i) )
