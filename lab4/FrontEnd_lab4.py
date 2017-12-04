@@ -349,7 +349,7 @@ def login():
 @route('/logout')
 def logout():
         session = request.environ.get('beaker.session')
-        if 'credentials' in session:
+        if session == None:
                 del session['credentials']
         redirect("/home_anonymous")
 
@@ -543,7 +543,7 @@ def searchpages(pageid, userinput):
             Result = """<table border = "0"><tr><th align = "left"><font size=5>Search Results<font></th></tr>"""
             urlHTML = " ".join(page[int(pageid)])
             session = request.environ.get('beaker.session')
-            if 'credentials' not in session:
+            if session == None:
                 return html + loginButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
             else:
                 return html + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
