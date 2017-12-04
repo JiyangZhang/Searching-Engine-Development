@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 from bottle import route, run, request, FormsDict, error, redirect, app, Bottle
 import collections, sqlite3, httplib2
 from math import ceil, floor
@@ -9,11 +11,12 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 import collections
 import string
-import getdata as gd
+#import getdata as gd
 
 
 #variable definitions
-baseURL = ""
+baseURL = "http://ec2-54-236-238-120.compute-1.amazonaws.com"
+#baseURL = "http://localhost:8004"
 #new
 mapURL = "https://www.google.com/maps/search/"
 map_flag = 0
@@ -25,6 +28,8 @@ checkLogout = 0
 topdic = collections.OrderedDict()
 userinfo = '<p> your email address :'  #user's information string
 user_email = {}
+solution_valid = True
+solution = 0
 # add words into dic
 def countdic(stringin):
     stringin = "".join(l for l in stringin if l not in string.punctuation)
@@ -237,48 +242,48 @@ searchHTML_mid = '''
 	</div>
 '''
 searchHTML = '''
-        <div align ="middle">
-                <form action ="/search" method="get">
-                        Search: <input name="userinput" type="text"/>
-                        <input value = "Search" type="submit" />
-                </form>
-        </div>
-        '''
+	<div>
+		<form action ="/search" method="get" autocomplete="on" spellcheck="true">
+			Search: <input name="userinput" type="text"/>
+			<input value = "Search" type="submit" />
+		</form>
+	</div>
+'''
 
 #greetings
 greeting = '''
-<img id="d2" src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/9825bc315c6034a8e0dd5e1dc01349540923766b.jpg" width=50/>
-<img src="https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/aa64034f78f0f736b693aa9d0155b319ebc41338.jpg" width=150>
+<img id="d2" src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160157fb9ea3edef&attid=0.2&disp=emb&realattid=ii_jaoudzuv0_160157f965a31872&attbid=ANGjdJ-oscf-MB1YtvUoT42FWRk6pEna_p25E8Kcsm-Vpi3ad4wEVa-UQVYo6zrhiaR7RRRufz7yn_60tXJbaP2RUbDfr_qWgUWaLlrSmArWY-lPdRytLZmqBqJah2w&sz=w264-h264&ats=1512189181678&rm=160157fb9ea3edef&zw&atsh=1" width=50/>
+<img src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160158692bd3eee6&attid=0.1&disp=emb&realattid=ii_jaounrty0_16015868bd11abcd&attbid=ANGjdJ_aLsJSOZBnIgHlS0frDsYpUkKFsEQz_PCa9hDpATrzH8ZcS3QINWT6IZaovhEzmeOvUFq4wtyDlU1bC9H_T4dl9f7Do0AdBtASTCuMf0C8R58ejWBEnjBrmPk&sz=w382-h86&ats=1512189631050&rm=160158692bd3eee6&zw&atsh=1" width=150>
 '''
+
 greeting_anime = '''
 <div align ="middle">
-<img id="d2" src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/9825bc315c6034a8e0dd5e1dc01349540923766b.jpg" width="150" align="middle"/>
+<img id="d2" src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160157fb9ea3edef&attid=0.2&disp=emb&realattid=ii_jaoudzuv0_160157f965a31872&attbid=ANGjdJ-oscf-MB1YtvUoT42FWRk6pEna_p25E8Kcsm-Vpi3ad4wEVa-UQVYo6zrhiaR7RRRufz7yn_60tXJbaP2RUbDfr_qWgUWaLlrSmArWY-lPdRytLZmqBqJah2w&sz=w264-h264&ats=1512189181678&rm=160157fb9ea3edef&zw&atsh=1" width="150" align="middle"/>
 <script type="text/javascript">
 var i=1;
 function f(){
    i++;
    if(i>4) i=1;
    if(i==1){
-   document.getElementById('d2').src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/9825bc315c6034a8e0dd5e1dc01349540923766b.jpg";
+   document.getElementById('d2').src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160157fb9ea3edef&attid=0.2&disp=emb&realattid=ii_jaoudzuv0_160157f965a31872&attbid=ANGjdJ-oscf-MB1YtvUoT42FWRk6pEna_p25E8Kcsm-Vpi3ad4wEVa-UQVYo6zrhiaR7RRRufz7yn_60tXJbaP2RUbDfr_qWgUWaLlrSmArWY-lPdRytLZmqBqJah2w&sz=w264-h264&ats=1512189181678&rm=160157fb9ea3edef&zw&atsh=1";
    }
    if(i==2){
-   document.getElementById('d2').src="https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/b2de9c82d158ccbfa7df53a612d8bc3eb03541cf.jpg";
+   document.getElementById('d2').src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160157fb9ea3edef&attid=0.4&disp=emb&realattid=ii_jaoudzvn3_160157f965a31872&attbid=ANGjdJ_RrVU6e1Fmq83xLXECy9wgV7HEI4W2XZpEx40EyK7MlpOX2dspHP8IFKAdsVFu_s8ZNgafccUo1y3SRdlUEzdBSzThwtOfegWExoBiqyJmfW4k9WDIFWnvvWE&sz=w264-h264&ats=1512189181679&rm=160157fb9ea3edef&zw&atsh=1";
    }
    if(i==3){
-   document.getElementById('d2').src="https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/79f0f736afc37931115660b5e0c4b74543a9116b.jpg";
+   document.getElementById('d2').src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160157fb9ea3edef&attid=0.3&disp=emb&realattid=ii_jaoudzvf2_160157f965a31872&attbid=ANGjdJ-tMsfxdFWRDFi6mcRwaa3rZRAmTKBudgeDuqRENFG8EWTd8NaWQv8cY8Xhd6UCENTxgfxSEM1uyij2VpY4O0Agp-jDqDDr5NO-hpV1-1BM1pqtPjlsD6SiWd8&sz=w264-h264&ats=1512189181679&rm=160157fb9ea3edef&zw&atsh=1";
    }
    if(i==4){
-   document.getElementById('d2').src="https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/4b90f603738da977104d60b7bb51f8198718e3c8.jpg";
+   document.getElementById('d2').src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160157fb9ea3edef&attid=0.1&disp=emb&realattid=ii_jaoudzv71_160157f965a31872&attbid=ANGjdJ8mODRwlfHRXJPPwnrAGnfucg0EF2DTLBtiuPb2NIqnno-nmENPNuwK-4WLsbLp9gZ1mWqRJoHehcdUmR8Hg2hrKtTs3HKu_81a9QqtIJzE4hluHqsZF-fdbrU&sz=w264-h264&ats=1512189181678&rm=160157fb9ea3edef&zw&atsh=1";
    }  
 }
 window.setInterval(f, 500);
 </script></div>
 
 <div align ="middle">
-	<img src="https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/aa64034f78f0f736b693aa9d0155b319ebc41338.jpg" width=300>
+	<img src="https://mail.google.com/mail/u/0/?ui=2&ik=7400477797&view=fimg&th=160158692bd3eee6&attid=0.1&disp=emb&realattid=ii_jaounrty0_16015868bd11abcd&attbid=ANGjdJ_aLsJSOZBnIgHlS0frDsYpUkKFsEQz_PCa9hDpATrzH8ZcS3QINWT6IZaovhEzmeOvUFq4wtyDlU1bC9H_T4dl9f7Do0AdBtASTCuMf0C8R58ejWBEnjBrmPk&sz=w382-h86&ats=1512189631050&rm=160158692bd3eee6&zw&atsh=1" width=300>
 </div><br></br>
 '''
-
 #login button
 loginButton = '''<FORM METHOD="LINK" ACTION="''' + baseURL + '''/login" ALIGN = "right">
 <INPUT TYPE="submit" VALUE="Login">
@@ -321,10 +326,7 @@ def error404(error):
         return '''This page or file does not exist. <br><br> Please visit <a href="''' + baseURL + '''"> Home </a> for a new search.'''
 
 @route('/','GET')
-
 def start():
-        global baseURL
-        baseURL = '{}'.format(request.url)
         if map_flag == 1:
                 html = frontend[1]
         elif image_flag ==1:
@@ -332,7 +334,7 @@ def start():
         else:
                 html = frontend[0]
         session = request.environ.get('beaker.session')
-        if  session == None:
+        if 'credentials' not in session:
                 redirect('/home_anonymous')
         else:
                 redirect('/user_home')
@@ -471,6 +473,20 @@ def do_search():
         for i in search_dic:
             command = command + '<tr><td>' + str(i) + '</td><td>' + str(search_dic[i]) + '</td></tr>'
         command = command + '</table>'
+        #math operation
+        if ('+' in userinput) or ('-' in userinput) or ('*' in userinput) or ('/' in userinput) or ('**' in userinput):
+            try:
+                global solution 
+                solution = eval(userinput)
+                if ('/' in userinput):
+                    userinput=userinput.replace("/", "slash") 
+                global solution_valid 
+                solution_valid = True  
+            except Exception, e:
+                global solution_valid 
+                solution_valid = False
+                pass
+        print userinput
         if map_flag == 1:
             req = userinput.replace(' ','+')
             url = mapURL + req
@@ -483,12 +499,12 @@ def searchpages(pageid, userinput):
         #get results from  table
         words = userinput.split(" ")
         searchWord = (words[0])
+        url = []
         if image_flag == 0:
                 url = gd.word_to_urls(searchWord)
         elif image_flag ==1:
                 url = gd.word_to_img(searchWord)
-        if url == []:
-                return logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" + "<p>there is no result found!</p>"
+        url = ["www.baidu.com","www.google.ca","www.amazon.com","www.4399.com"]        
         page = []
         temp_page=[]
         #The SELECT DISTINCT statement is used to return only distinct values
@@ -499,7 +515,7 @@ def searchpages(pageid, userinput):
                 for item in url:
                         item = '<tr><td><font size=5><a href="' + item + '" target="_blank">'+ item + "</a><font></td></tr>"
                         temp_page.insert(len(temp_page), item)
-                        page[0]=[temp_page]
+                        page.append(temp_page)
         else:
                 counter =0
                 page_num =  0
@@ -514,12 +530,12 @@ def searchpages(pageid, userinput):
                                 temp_page = []
                 if counter != 0:
                         page.insert(len(page),temp_page)
-
-
-
-
+        if solution_valid == True:
+                message = "Math Calculation: " + str(solution)
+        else:
+                message = ""
         if len(page) ==0:
-                return html + logoutButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
+                return html + logoutButton + backButton + greeting + searchHTML + "<p>"+message+"</p>" "<br><br><font color='white'>"  + userinput + " not found.</font>"
 
 
         pageList = "ALL RESULTS SHOWN:<br>"+"""<table border = "0"><tr>"""
@@ -531,12 +547,12 @@ def searchpages(pageid, userinput):
         if len(page) != 0:
                 Result = """<table border = "0"><tr><th align = "left"><font size=5>Search Results<font></th></tr>"""
                 urlHTML = " ".join(page[int(pageid)])
-                return html + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<br><br>" +  "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
+                return html + logoutButton + backButton + greeting + "<br><br>" + searchHTML + "<p>"+message+"</p>" + "<br><br>" + "<br><br><font size=5>%s %s</table></font<br><br>%s"  %(Result, urlHTML, pageList)
         else:
                 redirect('/err')
 
 run(host='0.0.0.0',port='80',debug=True)
-
+#run(host = 'localhost', port="8004", debug=True, app = App)
 
 
 
