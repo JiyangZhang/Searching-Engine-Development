@@ -490,10 +490,10 @@ def searchpages(pageid, userinput):
 	
 	if url == "wrong":
 		session = request.environ.get('beaker.session')
-            if session == None:
-                return html + loginButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
-            else:
-                return html + logoutButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
+		if session == None:
+                	return html + loginButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
+            	else:
+                	return html + logoutButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
 		
            
         
