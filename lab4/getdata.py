@@ -10,11 +10,15 @@ def word_to_id(word):
 	client = MongoClient('mongodb://localhost:27017/')
 	db = client['eecgdata']
 	posts = db['lexicon']
+	if posts.find_one({"word": word}) == None:
+		return "wrong"
 	document = dict(posts.find_one({"word": word}))
 	return document['id']
 	
 # from word_id get doc_id
-def word_to_doc(word_id):  
+def word_to_doc(word_id):
+	if word_id == "wrong":
+		return "wrong"
 	client = MongoClient('mongodb://localhost:27017/')
 	db = client['eecgdata']
 	posts = db['inverted_index']
@@ -23,6 +27,8 @@ def word_to_doc(word_id):
 
 
 def rank(l):  # return list of tuples, (doc_id, score)
+	if l == "wrong":
+		return "wrong"
 	score_dic = {}
 	client = MongoClient('mongodb://localhost:27017/')
 	db = client['eecgdata']
@@ -39,6 +45,8 @@ def rank(l):  # return list of tuples, (doc_id, score)
 
 # a list of tuples
 def sorted_url(sorted_l):
+	if sorted_l == "wrong":
+		return "wrong"
 	client = MongoClient('mongodb://localhost:27017/')
 	db = client['eecgdata']
 	posts = db['documet_index']
@@ -52,6 +60,8 @@ def sorted_url(sorted_l):
 	return l
 
 def img_url(sorted_l):
+	if sorted_l == "wrong":
+		return "wrong"
 	client = MongoClient('mongodb://localhost:27017/')
     	db = client['eecgdata']
     	posts = db['documet_index']
