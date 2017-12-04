@@ -519,7 +519,7 @@ def searchpages(pageid, userinput):
 
         if len(page) ==0:
             session = request.environ.get('beaker.session')
-            if 'credentials' not in session:
+            if session == None:
                 return html + loginButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
             else:
                 return html + logoutButton + backButton + greeting + searchHTML + "<br><br><font color='white'>"  + userinput + " not found.</font>"
