@@ -331,7 +331,7 @@ def start():
         else:
                 html = frontend[0]
         session = request.environ.get('beaker.session')
-        if 'credentials' not in session:
+        if session == None:
                 redirect('/home_anonymous')
         else:
                 redirect('/user_home')
