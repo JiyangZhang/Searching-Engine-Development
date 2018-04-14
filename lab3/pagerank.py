@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-def page_rank(links, num_iterations=20, initial_pr=1.0):
+def page_rank(links, num_iterations=20, initial_pr=1.0):  # input tuples of links(from_id, to_id)
     from collections import defaultdict
     import numpy as np
 
