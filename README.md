@@ -1,3 +1,3 @@
 # searching-engine-uoft
-the searching engine project
+The searching engine project in University of Toronto
 Jiyang Zhang's work
